@@ -47,7 +47,7 @@ class BingoGame:
             self._boards.append(Board(grid))
             i += 1
 
-    def play(self):
+    def play_to_win(self):
         for x in self._sequence:
             for board in self._boards:
                 if board.bingo(x):
@@ -56,12 +56,31 @@ class BingoGame:
 
         print("no winner")
 
+    def play_to_lose(self):
+        for x in self._sequence:
+            boards_to_remove = []
+            for board in self._boards:
+                if board.bingo(x):
+                    boards_to_remove.append(board)
+            for board in boards_to_remove:
+                self._boards.remove(board)
+            if len(self._boards) == 0:
+                if len(boards_to_remove) != 1:
+                    print("Unexpected multiple losers")
+                else:
+                    print(boards_to_remove[0].unmarked_sum() * x)
+                return
+
 
 def main():
     f = open("day04.txt")
     lines = f.readlines()
+    # part I:
     game = BingoGame(lines)
-    game.play()
+    game.play_to_win()
+    # part II:
+    game = BingoGame(lines)
+    game.play_to_lose()
 
 
 if __name__ == '__main__':
