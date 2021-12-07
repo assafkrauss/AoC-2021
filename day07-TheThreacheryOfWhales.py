@@ -18,6 +18,8 @@ def main():
 
     # part I
     print(calc_fuel(all_crabs, lambda x: x))
+    # part II
+    print(calc_fuel(all_crabs, lambda x: (x / 2) * (x + 1)))
 
 
 if __name__ == '__main__':
