@@ -75,7 +75,9 @@ class OctopusGrid:
         for row in self._grid:
             for octopus in row:
                 octopus.step_complete()
+
         self.flash_counter += step_flash_counter
+        return step_flash_counter == len(self._grid) * len(self._grid[0])
 
 
 def main():
@@ -86,6 +88,13 @@ def main():
     for i in range(100):
         og.step()
     print(og.flash_counter)
+
+    i = 100
+    while True:
+        if og.step():
+            print('All flashing together at step {0}'.format(i + 1))
+            break
+        i += 1
 
 
 if __name__ == '__main__':
