@@ -52,11 +52,35 @@ def main():
     f = open("day15.txt")
     lines = f.readlines()
 
+    lines = [line.strip() for line in lines]
+    grid = []
+    for line in lines:
+        grid.append([int(c) for c in line])
+
     chitons = []
-    for y in range(len(lines)):
+    for y in range(len(grid)):
         row = []
-        for x in range(len(lines[0].strip())):
-            row.append(Chiton(x, y, len(lines[0].strip()) - 1, len(lines) - 1, int(lines[y][x])))
+        for x in range(len(grid[0])):
+            row.append(Chiton(x, y, len(grid[0]) - 1, len(grid) - 1, grid[y][x]))
+        chitons.append(row)
+
+    print(dijkstra(chitons))
+
+    large_grid = []
+    for y in range(5 * len(grid)):
+        large_row = []
+        for x in range(5 * len(grid[0])):
+            value = grid[y % len(grid)][x % len(grid[0])] + (x // len(grid)) + (y // len(grid[0]))
+            if value > 9:
+                value -= 9
+            large_row.append(value)
+        large_grid.append(large_row)
+
+    chitons = []
+    for y in range(len(large_grid)):
+        row = []
+        for x in range(len(large_grid[0])):
+            row.append(Chiton(x, y, len(large_grid[0]) - 1, len(large_grid) - 1, large_grid[y][x]))
         chitons.append(row)
 
     print(dijkstra(chitons))
