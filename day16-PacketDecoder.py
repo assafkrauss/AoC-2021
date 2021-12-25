@@ -47,15 +47,44 @@ class Packet:
             version_sum += sub.get_version_sum()
         return version_sum
 
+    def calculate(self):
+        if self.id == 4:
+            return self.literal
+        elif self.id == 0:
+            return sum([p.calculate() for p in self.sub_packets])
+        elif self.id == 1:
+            res = 1
+            for sub in self.sub_packets:
+                res *= sub.calculate()
+            return res
+        elif self.id == 2:
+            return min(self.sub_packets, key=lambda p: p.calculate()).calculate()
+        elif self.id == 3:
+            return max(self.sub_packets, key=lambda p: p.calculate()).calculate()
+        elif self.id == 5:
+            return 1 if self.sub_packets[0].calculate() > self.sub_packets[1].calculate() else 0
+        elif self.id == 6:
+            return 1 if self.sub_packets[0].calculate() < self.sub_packets[1].calculate() else 0
+        elif self.id == 7:
+            return 1 if self.sub_packets[0].calculate() == self.sub_packets[1].calculate() else 0
+        else:
+            raise("Unknown packet id: {0}".format(self.id))
+
+
+def hex2bin(hex_str):
+    bin_str = ''
+    for c in hex_str:
+        bin_str += format(int(c, 16), '04b')
+    return bin_str
+
 
 def main():
     f = open("day16.txt")
     line = f.readline().strip()
-    txt = bin(int(line, 16))[2:]
-    while len(txt) % 4 != 0:
-        txt = '0' + txt
+    txt = hex2bin(line)
     p = Packet(txt, 0)
     print(p.get_version_sum())
+    print(p.calculate())
 
 
 if __name__ == '__main__':
